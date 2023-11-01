@@ -1,12 +1,12 @@
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
-public class CinemaHall {
-    private ArrayList<MovieSession> movieSessions = new ArrayList<MovieSession>();
+public class Cinema_Hall {
+    private ArrayList<Movie_Session> movieSessions = new ArrayList<Movie_Session>();
     int seatsRowCount;
     int seatsColumnsCount;
 
-    public CinemaHall(int seatsRowsCount, int seatsColumnsCount) {
+    public Cinema_Hall(int seatsRowsCount, int seatsColumnsCount) {
         if (seatsRowsCount <= 0 || seatsColumnsCount <= 0) {
             throw new Error("Зал не может быть создан с такими параметрами");
         }
@@ -15,9 +15,9 @@ public class CinemaHall {
         this.seatsRowCount = seatsRowsCount;
     }
 
-    public void addMovie(MovieSession newMovie) {
+    public void addMovie(Movie_Session newMovie) {
         for (int i = 0; i < this.movieSessions.size(); i++) {
-            MovieSession movie = movieSessions.get(i);
+            Movie_Session movie = movieSessions.get(i);
 
             // movie is after newMovie
             if (movie.movieStart.after(newMovie.movieStart)) {
@@ -45,8 +45,8 @@ public class CinemaHall {
         return movieSessions.size();
     }
 
-    public MovieSession getMovie(String movieTitle) {
-        for (MovieSession movie : movieSessions) {
+    public Movie_Session getMovie(String movieTitle) {
+        for (Movie_Session movie : movieSessions) {
             if (movie.movieTitle.equals(movieTitle)) {
                 return movie;
             }
@@ -55,7 +55,7 @@ public class CinemaHall {
         throw new Error("В этом зале не идет такого кино");
     }
 
-    public MovieSession getNextMovie() {
+    public Movie_Session getNextMovie() {
         for (int i = 0; i < movieSessions.size(); i++) {
             if (movieSessions.get(i).hasFreeSeats()) {
                 return movieSessions.get(i);
@@ -67,7 +67,7 @@ public class CinemaHall {
 
     public void showMovies(SimpleDateFormat formatter) {
         System.out.println("Доступные фильмы:");
-        for (MovieSession movie : movieSessions) {
+        for (Movie_Session movie : movieSessions) {
             if (movie.hasFreeSeats()) {
                 System.out.printf("Название '%s', длительность %d минут, начало %s \n", movie.movieTitle, movie.movieLength, formatter.format(movie.movieStart.getTime()));
             }

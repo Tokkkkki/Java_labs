@@ -1,9 +1,9 @@
 import java.util.ArrayList;
 
 public class Cinema {
-    private ArrayList<CinemaHall> cinemaHalls = new ArrayList<CinemaHall>();
+    private ArrayList<Cinema_Hall> cinemaHalls = new ArrayList<Cinema_Hall>();
 
-    public void addCinemaHall(CinemaHall hall) {
+    public void addCinemaHall(Cinema_Hall hall) {
         this.cinemaHalls.add(hall);
     }
 
@@ -19,14 +19,14 @@ public class Cinema {
         System.out.println("");
     }
 
-    public void addMovie(int hallId, MovieSession movie) {
-        CinemaHall hall;
+    public void addMovie(int hallId, Movie_Session movie) {
+        Cinema_Hall hall;
         hall = this.getHall(hallId);
         hall.addMovie(movie);
     }
 
-    public CinemaHall getHall(int hallId) {
-        CinemaHall hall;
+    public Cinema_Hall getHall(int hallId) {
+        Cinema_Hall hall;
 
         try {
             hall = this.cinemaHalls.get(hallId);

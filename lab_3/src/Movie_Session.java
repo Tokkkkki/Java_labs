@@ -1,13 +1,13 @@
 import java.util.Date;
 
-public class MovieSession {
+public class Movie_Session {
     private boolean[][] seats;
     private int freeSeatsCount;
     public Date movieStart = new Date();
     public String movieTitle;
     public int movieLength;
 
-    public MovieSession(Date movieStart, int movieLength, String movieTitle) {
+    public Movie_Session(Date movieStart, int movieLength, String movieTitle) {
         if (movieTitle.length() == 0) throw new Error("Название фильма не может быть пустой строкой");
         if (movieLength < 60) throw new Error("Продолжительность фильма не может быть меньше 60 минут");
 

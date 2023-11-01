@@ -27,7 +27,7 @@ public class Main {
                 user = new Admin();
                 break;
             case 2:
-                user = new Customer();
+                user = new Client();
                 break;
         }
 
@@ -71,15 +71,15 @@ public class Main {
     }
 
     public static void showNextMovie() {
-        MovieSession currentMovie = new MovieSession(new Date(0), 0, "");
+        Movie_Session currentMovie = new Movie_Session(new Date(0), 0, "");
         int cinemaId = -1;
         int hallId = -1;
 
         for (int i = 0; i < cinemas.size(); i++) {
             Cinema cinema = cinemas.get(i);
             for (int j = 0; j < cinema.getHallsCount(); j++) {
-                CinemaHall hall = cinema.getHall(j);
-                MovieSession movie = hall.getNextMovie();
+                Cinema_Hall hall = cinema.getHall(j);
+                Movie_Session movie = hall.getNextMovie();
 
                 if (movie != null) {
                     if (movie.movieStart.before(currentMovie.movieStart) || currentMovie.movieStart.getTime() == 0) {
@@ -112,7 +112,7 @@ public class Main {
         int hallId = scanner.nextInt();
         scanner.nextLine();
 
-        CinemaHall hall;
+        Cinema_Hall hall;
         try {
             hall = cinema.getHall(hallId);
         }
@@ -127,7 +127,7 @@ public class Main {
         System.out.println("Введите название интересующего фильма:");
         String movieTitle = scanner.nextLine();
 
-        MovieSession movie = hall.getMovie(movieTitle);
+        Movie_Session movie = hall.getMovie(movieTitle);
         movie.showSeats();
 
         System.out.println("Введите номер строки и столбца нужного кресла:");
@@ -169,7 +169,7 @@ public class Main {
         int column = scanner.nextInt();
         scanner.nextLine();
 
-        CinemaHall newCinemaHall = new CinemaHall(row, column);
+        Cinema_Hall newCinemaHall = new Cinema_Hall(row, column);
 
         Cinema cinema;
         try {
@@ -224,7 +224,7 @@ public class Main {
             return;
         }
 
-        MovieSession movie = new MovieSession(date, length, title);
+        Movie_Session movie = new Movie_Session(date, length, title);
 
         try {
             cinema.addMovie(hallId, movie);
@@ -273,15 +273,15 @@ public class Main {
         for (int i = 0; i <= 1; i++) {
             Cinema cinema = new Cinema();
             for (int j = 0; j <= 1; j++) {
-                CinemaHall hall = new CinemaHall(5, 5);
+                Cinema_Hall hall = new Cinema_Hall(5, 5);
                 cinema.addCinemaHall(hall);
             }
             cinemas.add(cinema);
         }
 
-        MovieSession firstMovie = new MovieSession(formatter.parse("2023-10-05 15:30"), 120, "Звездные войны");
-        MovieSession secondMovie = new MovieSession(formatter.parse("2023-10-10 10:30"), 60, "Гарри Поттер");
-        MovieSession thirdMovie = new MovieSession(formatter.parse("2023-10-05 09:00"), 120, "Матрица");
+        Movie_Session firstMovie = new Movie_Session(formatter.parse("2023-10-05 15:30"), 120, "Звездные войны");
+        Movie_Session secondMovie = new Movie_Session(formatter.parse("2023-10-10 10:30"), 60, "Гарри Поттер");
+        Movie_Session thirdMovie = new Movie_Session(formatter.parse("2023-10-05 09:00"), 120, "Матрица");
 
         cinemas.get(0).getHall(0).addMovie(firstMovie);
         cinemas.get(0).getHall(0).addMovie(thirdMovie);
