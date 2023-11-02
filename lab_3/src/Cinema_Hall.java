@@ -1,13 +1,16 @@
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
-public class Cinema_Hall {
-    private ArrayList<Movie_Session> movieSessions = new ArrayList<Movie_Session>();
+public class Cinema_Hall
+{
+    private final ArrayList<Movie_Session> movieSessions = new ArrayList<Movie_Session>();
     int seatsRowCount;
     int seatsColumnsCount;
 
-    public Cinema_Hall(int seatsRowsCount, int seatsColumnsCount) {
-        if (seatsRowsCount <= 0 || seatsColumnsCount <= 0) {
+    public Cinema_Hall(int seatsRowsCount, int seatsColumnsCount)
+    {
+        if (seatsRowsCount <= 0 || seatsColumnsCount <= 0)
+        {
             throw new Error("Зал не может быть создан с такими параметрами");
         }
 
@@ -15,24 +18,29 @@ public class Cinema_Hall {
         this.seatsRowCount = seatsRowsCount;
     }
 
-    public void addMovie(Movie_Session newMovie) {
-        for (int i = 0; i < this.movieSessions.size(); i++) {
-            Movie_Session movie = movieSessions.get(i);
+    public void addMovie(Movie_Session newMovie)
+    {
+        for (Movie_Session movie : this.movieSessions)
+        {
+            if (movie.movieStart.after(newMovie.movieStart))
+            {
+                if (movie.movieStart.getTime() < newMovie.movieStart.getTime() + (long) newMovie.movieLength * 60000L)
+                {
+                    throw new Error("В это время в зале проводится другой сеанс");
+                }
+            }
 
-            // movie is after newMovie
-            if (movie.movieStart.after(newMovie.movieStart)) {
-                if (movie.movieStart.getTime() < newMovie.movieStart.getTime() + (long)newMovie.movieLength * 60000L) {
-                    throw new Error("В это время в зале идет другое кино");
+            else if (movie.movieStart.before(newMovie.movieStart))
+            {
+                if (movie.movieStart.getTime() + (long) movie.movieLength * 60000L > newMovie.movieStart.getTime())
+                {
+                    throw new Error("В это время в зале проводится другой сеанс");
                 }
             }
-            // movie is before newMovie
-            else if (movie.movieStart.before(newMovie.movieStart)) {
-                if (movie.movieStart.getTime() + (long)movie.movieLength * 60000L > newMovie.movieStart.getTime()) {
-                    throw new Error("В это время в зале идет другое кино");
-                }
-            }
-            else {
-                throw new Error("В это время в зале идет другое кино");
+
+            else
+            {
+                throw new Error("В это время в зале проводится другой сеанс");
             }
         }
 
@@ -41,34 +49,39 @@ public class Cinema_Hall {
         movieSessions.sort((a, b) -> a.movieStart.compareTo(b.movieStart));
     }
 
-    public int getMoviesCount() {
-        return movieSessions.size();
-    }
-
-    public Movie_Session getMovie(String movieTitle) {
-        for (Movie_Session movie : movieSessions) {
-            if (movie.movieTitle.equals(movieTitle)) {
+    public Movie_Session getMovie(String movieTitle)
+    {
+        for (Movie_Session movie : movieSessions)
+        {
+            if (movie.movieTitle.equals(movieTitle))
+            {
                 return movie;
             }
         }
 
-        throw new Error("В этом зале не идет такого кино");
+        throw new Error("В этом зале нет такого кино");
     }
 
-    public Movie_Session getNextMovie() {
-        for (int i = 0; i < movieSessions.size(); i++) {
-            if (movieSessions.get(i).hasFreeSeats()) {
-                return movieSessions.get(i);
+    public Movie_Session getNextMovie()
+    {
+        for (Movie_Session movieSession : movieSessions)
+        {
+            if (movieSession.hasFreeSeats())
+            {
+                return movieSession;
             }
         }
 
         return null;
     }
 
-    public void showMovies(SimpleDateFormat formatter) {
+    public void showMovies(SimpleDateFormat formatter)
+    {
         System.out.println("Доступные фильмы:");
-        for (Movie_Session movie : movieSessions) {
-            if (movie.hasFreeSeats()) {
+        for (Movie_Session movie : movieSessions)
+        {
+            if (movie.hasFreeSeats())
+            {
                 System.out.printf("Название '%s', длительность %d минут, начало %s \n", movie.movieTitle, movie.movieLength, formatter.format(movie.movieStart.getTime()));
             }
         }

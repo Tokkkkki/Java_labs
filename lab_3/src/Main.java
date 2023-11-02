@@ -10,79 +10,78 @@ public class Main {
     static ArrayList<Cinema> cinemas = new ArrayList<Cinema>();
     static Scanner scanner = new Scanner(System.in, "Cp866");
     static SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.ENGLISH);
-    public static void main (String[] args) {
-        System.out.println("Введите: 1, чтобы войти как администратор; 2, чтобы войти как пользователь");
+    public static void main (String[] args)
+    {
+        System.out.println("Введите: чтобы войти как администратор - 1; чтобы войти как пользователь - 2");
         int userType = scanner.nextInt();
         scanner.nextLine();
 
-        try {
+        try
+        {
             initDefaultCinemas();
         }
-        catch (ParseException e) {
+        catch (ParseException e)
+        {
             e.printStackTrace();
         }
 
-        switch (userType) {
-            case 1:
-                user = new Admin();
-                break;
-            case 2:
-                user = new Client();
-                break;
+        switch (userType)
+        {
+            case 1 -> user = new Admin();
+            case 2 -> user = new Client();
         }
 
         showUserActions();
     }
 
-    public static void showUserActions() {
+    public static void showUserActions()
+    {
         user.showActions();
         int action = scanner.nextInt();
         scanner.nextLine();
 
-        try {
-            switch (action) {
-                case 0:
+        try
+        {
+            switch (action)
+            {
+                case 0 ->
+                {
                     user.showTickets();
                     showUserActions();
-                    break;
-                case 1:
-                    showNextMovie();
-                    break;
-                case 2:
-                    buyTicket();
-                    break;
-                case 3:
-                    addCinema();
-                    break;
-                case 4:
-                    addCinemaHall();
-                    break;
-                case 5:
-                    addMovie();
-                    break;
-                default:
-                    showUserActions();
+                }
+                case 1 -> showNextMovie();
+                case 2 -> buyTicket();
+                case 3 -> addCinema();
+                case 4 -> addCinemaHall();
+                case 5 -> addMovie();
+                default -> showUserActions();
             }
         }
-        catch (Error e) {
+        catch (Error e)
+        {
             System.out.println(e.getMessage());
             showUserActions();
         }
     }
 
-    public static void showNextMovie() {
+    public static void showNextMovie()
+    {
         Movie_Session currentMovie = new Movie_Session(new Date(0), 0, "");
         int cinemaId = -1;
         int hallId = -1;
 
-        for (int i = 0; i < cinemas.size(); i++) {
+        for (int i = 0; i < cinemas.size(); i++)
+        {
             Cinema cinema = cinemas.get(i);
-            for (int j = 0; j < cinema.getHallsCount(); j++) {
+            for (int j = 0; j < cinema.getHallsCount(); j++)
+            {
                 Cinema_Hall hall = cinema.getHall(j);
                 Movie_Session movie = hall.getNextMovie();
 
-                if (movie != null) {
-                    if (movie.movieStart.before(currentMovie.movieStart) || currentMovie.movieStart.getTime() == 0) {
+                if (movie != null)
+                {
+                    if (movie.movieStart.before(currentMovie.movieStart) || currentMovie.movieStart.getTime() == 0)
+                    {
                         currentMovie = movie;
                         cinemaId = i;
                         hallId = j;
@@ -91,7 +90,8 @@ public class Main {
             }
         }
 
-        if (cinemaId == -1) {
+        if (cinemaId == -1)
+        {
             System.out.println("Ближайшего сеанса не найдено");
             showUserActions();
             return;
@@ -104,7 +104,8 @@ public class Main {
         showUserActions();
     }
 
-    public static void buyTicket() {
+    public static void buyTicket()
+    {
         Cinema cinema = getCinema();
 
         cinema.showHalls();
@@ -113,10 +114,12 @@ public class Main {
         scanner.nextLine();
 
         Cinema_Hall hall;
-        try {
+        try
+        {
             hall = cinema.getHall(hallId);
         }
-        catch (Error e) {
+        catch (Error e)
+        {
             System.out.println(e.getMessage());
             showUserActions();
             return;
@@ -124,33 +127,36 @@ public class Main {
 
         hall.showMovies(formatter);
 
-        System.out.println("Введите название интересующего фильма:");
+        System.out.println("Введите название фильма:");
         String movieTitle = scanner.nextLine();
 
         Movie_Session movie = hall.getMovie(movieTitle);
         movie.showSeats();
 
-        System.out.println("Введите номер строки и столбца нужного кресла:");
+        System.out.println("Введите номер строки и столбца кресла:");
         int row = scanner.nextInt();
         scanner.nextLine();
         int column = scanner.nextInt();
         scanner.nextLine();
 
-        try {
+        try
+        {
             movie.bookSeat(row, column);
             user.buyTicket(cinemas.indexOf(cinema), hallId, movieTitle, row, column);
             user.showTickets();
             showUserActions();
         }
-        catch (Error e) {
+        catch (Error e)
+        {
             System.out.println(e.getMessage());
             showUserActions();
             return;
         }
     }
 
-    public static void addCinema() {
-        if (!user.getModifyPermission()) throw new Error("Вы не обладаете необходимыми правами для этого действия");
+    public static void addCinema()
+    {
+        if (!user.getModifyPermission()) throw new Error("Вам не хватает прав для этого действия");
 
         Cinema newCinema = new Cinema();
         cinemas.add(newCinema);
@@ -159,8 +165,9 @@ public class Main {
         showUserActions();
     }
 
-    public static void addCinemaHall() {
-        if (!user.getModifyPermission()) throw new Error("Вы не обладаете необходимыми правами для этого действия");
+    public static void addCinemaHall()
+    {
+        if (!user.getModifyPermission()) throw new Error("Вам не хватает прав для этого действия");
 
         System.out.println("Введите количество рядов:");
         int row = scanner.nextInt();
@@ -172,10 +179,12 @@ public class Main {
         Cinema_Hall newCinemaHall = new Cinema_Hall(row, column);
 
         Cinema cinema;
-        try {
+        try
+        {
             cinema = getCinema();
         }
-        catch (Error e) {
+        catch (Error e)
+        {
             System.out.println(e.getMessage());
             showUserActions();
             return;
@@ -186,14 +195,17 @@ public class Main {
         showUserActions();
     }
 
-    public static void addMovie() {
-        if (!user.getModifyPermission()) throw new Error("Вы не обладаете необходимыми правами для этого действия");
+    public static void addMovie()
+    {
+        if (!user.getModifyPermission()) throw new Error("Вам не хватает прав для этого действия");
 
         Cinema cinema;
-        try {
+        try
+        {
             cinema = getCinema();
         }
-        catch (Error e) {
+        catch (Error e)
+        {
             System.out.println(e.getMessage());
             showUserActions();
             return;
@@ -207,7 +219,7 @@ public class Main {
         System.out.println("Введите название фильма");
         String title = scanner.nextLine();
 
-        System.out.println("Введите дату (пример: 2018-11-30 16:30)");
+        System.out.println("Введите дату (пример: 2023-10-31 14:30)");
         String stringDate = scanner.nextLine();
 
         System.out.println("Введите продолжительность фильма в минутах");
@@ -215,21 +227,25 @@ public class Main {
         scanner.nextLine();
 
         Date date;
-        try {
+        try
+        {
             date = formatter.parse(stringDate);
         }
-        catch (ParseException e) {
-            System.out.println("Произошла ошибка при форматировании даты");
+        catch (ParseException e)
+        {
+            System.out.println("Произошла ошибка при записи даты");
             showUserActions();
             return;
         }
 
         Movie_Session movie = new Movie_Session(date, length, title);
 
-        try {
+        try
+        {
             cinema.addMovie(hallId, movie);
         }
-        catch (Error e) {
+        catch (Error e)
+        {
             System.out.println(e.getMessage());
             showUserActions();
             return;
@@ -238,50 +254,59 @@ public class Main {
         showUserActions();
     }
 
-    public static void showCinemas() {
-        if (cinemas.size() == 0) {
+    public static void showCinemas()
+    {
+        if (cinemas.isEmpty())
+        {
             System.out.println("На данный момент нет доступных кинотеатров");
             showUserActions();
             return;
         }
 
         System.out.println("Номера доступных кинотеатров:");
-        for (int i = 0; i < cinemas.size(); i++) {
+        for (int i = 0; i < cinemas.size(); i++)
+        {
             System.out.printf("%d ", i);
         }
-        System.out.println("");
+        System.out.println();
     }
 
-    public static Cinema getCinema() {
+    public static Cinema getCinema()
+    {
         showCinemas();
         System.out.println("Введите номер кинотеатра");
         int cinemaId = scanner.nextInt();
         scanner.nextLine();
 
         Cinema cinema;
-        try {
+        try
+        {
             cinema = cinemas.get(cinemaId);
         }
-        catch (IndexOutOfBoundsException e) {
+        catch (IndexOutOfBoundsException e)
+        {
             throw new Error("Такого кинотеатра не существует");
         }
 
         return cinema;
     }
 
-    public static void initDefaultCinemas() throws ParseException {
-        for (int i = 0; i <= 1; i++) {
+    public static void initDefaultCinemas() throws ParseException
+    {
+        for (int i = 0; i <= 1; i++)
+        {
             Cinema cinema = new Cinema();
-            for (int j = 0; j <= 1; j++) {
+            for (int j = 0; j <= 1; j++)
+            {
                 Cinema_Hall hall = new Cinema_Hall(5, 5);
                 cinema.addCinemaHall(hall);
             }
             cinemas.add(cinema);
         }
 
-        Movie_Session firstMovie = new Movie_Session(formatter.parse("2023-10-05 15:30"), 120, "Звездные войны");
-        Movie_Session secondMovie = new Movie_Session(formatter.parse("2023-10-10 10:30"), 60, "Гарри Поттер");
-        Movie_Session thirdMovie = new Movie_Session(formatter.parse("2023-10-05 09:00"), 120, "Матрица");
+        Movie_Session firstMovie = new Movie_Session(formatter.parse("2023-10-30 11:30"), 90, "Морской бой");
+        Movie_Session secondMovie = new Movie_Session(formatter.parse("2023-10-25 9:30"), 120, "Человек-паук");
+        Movie_Session thirdMovie = new Movie_Session(formatter.parse("2023-10-31 12:00"), 150, "Начало");
 
         cinemas.get(0).getHall(0).addMovie(firstMovie);
         cinemas.get(0).getHall(0).addMovie(thirdMovie);
