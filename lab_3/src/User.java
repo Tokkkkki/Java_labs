@@ -2,20 +2,20 @@ import java.util.ArrayList;
 
 public abstract class User
 {
-    private final boolean modifyPermission;
-    private final ArrayList<Ticket> tickets = new ArrayList<Ticket>();
+    private boolean Permission;
+    private ArrayList<Ticket> tickets = new ArrayList<Ticket>();
 
-    public User(boolean modifyPermission)
+    public User(boolean Permission)
     {
-        this.modifyPermission = modifyPermission;
+        this.Permission = Permission;
     }
 
-    public boolean getModifyPermission()
+    public boolean getPermission()
     {
-        return this.modifyPermission;
+        return this.Permission;
     }
 
-    public void showActions()
+    public void Actions()
     {
         System.out.println("Выберите действие:");
         System.out.println("0 - посмотреть купленные билеты");
@@ -23,13 +23,13 @@ public abstract class User
         System.out.println("2 - купить билет");
     };
 
-    public void buyTicket(int cinemaId, int hallId, String movieTitle, int row, int column)
+    public void buyTicket(int cinemaId, int hallId, String movieName, int row, int column)
     {
-        Ticket ticket = new Ticket(cinemaId, hallId, movieTitle, row, column);
+        Ticket ticket = new Ticket(cinemaId, hallId, movieName, row, column);
         tickets.add(ticket);
     }
 
-    public void showTickets()
+    public void Tickets()
     {
         if (tickets.isEmpty())
         {
@@ -40,7 +40,7 @@ public abstract class User
         System.out.println("Ваши купленные билеты:");
         for (Ticket ticket : tickets)
         {
-            System.out.printf("Название: %s, кинотеатр %d, зал %d \n", ticket.getMovieTitle(), ticket.getCinema(), ticket.getHall());
+            System.out.printf("Название: %s, кинотеатр %d, зал %d \n", ticket.getMovieName(), ticket.getCinema(), ticket.getHall());
         }
     }
 }

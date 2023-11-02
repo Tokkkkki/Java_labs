@@ -6,7 +6,7 @@ public class Admin extends User
     }
 
     @Override
-    public void showActions()
+    public void Actions()
     {
         System.out.println("Выберите действие:");
         System.out.println("1 - посмотреть ближайший сеанс со свободными местами");

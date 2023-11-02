@@ -2,29 +2,29 @@ import java.util.Date;
 
 public class Movie_Session
 {
+    public String movieName;
     private boolean[][] seats;
-    private int freeSeatsCount;
-    public Date movieStart = new Date();
-    public String movieTitle;
-    public int movieLength;
+    private int freeSeats;
+    public Date movieDate = new Date();
+    public int movieDuration;
 
-    public Movie_Session(Date movieStart, int movieLength, String movieTitle)
+    public Movie_Session(Date movieDate, int movieDuration, String movieName)
     {
-        if (movieTitle.isEmpty()) throw new Error("Название фильма не может быть пустой строкой");
-        if (movieLength < 60) throw new Error("Продолжительность фильма не может быть меньше 60 минут");
+        this.movieDuration = movieDuration;
+        if (movieName.isEmpty()) throw new Error("Название фильма не может быть незаполненным");
+        if (movieDuration < 60) throw new Error("Продолжительность фильма не может быть меньше 60 минут");
 
-        this.movieStart = movieStart;
-        this.movieLength = movieLength;
-        this.movieTitle = movieTitle;
+        this.movieDate = movieDate;
+        this.movieName = movieName;
     }
 
-    public void setSeatsConfig(int rowsCount, int columnsCount)
+    public void SeatsConfig(int rowsCount, int columnsCount)
     {
         this.seats = new boolean[rowsCount][columnsCount];
-        freeSeatsCount = rowsCount * columnsCount;
+        freeSeats = rowsCount * columnsCount;
     }
 
-    public void showSeats()
+    public void Seats()
     {
         System.out.println("План зала (x - кресло забронировано, 0 - кресло свободно)");
 
@@ -50,7 +50,7 @@ public class Movie_Session
         return this.seats[row][column];
     }
 
-    public void bookSeat(int row, int column)
+    public void BookSeat(int row, int column)
     {
         if (this.checkSeatBook(row, column))
         {
@@ -58,11 +58,11 @@ public class Movie_Session
         }
 
         this.seats[row][column] = true;
-        freeSeatsCount -= 1;
+        freeSeats -= 1;
     }
 
-    public boolean hasFreeSeats()
+    public boolean FreeSeats()
     {
-        return freeSeatsCount != 0;
+        return freeSeats != 0;
     }
 }

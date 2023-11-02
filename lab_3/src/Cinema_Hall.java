@@ -3,7 +3,7 @@ import java.util.ArrayList;
 
 public class Cinema_Hall
 {
-    private final ArrayList<Movie_Session> movieSessions = new ArrayList<Movie_Session>();
+    private ArrayList<Movie_Session> movieSessions = new ArrayList<Movie_Session>();
     int seatsRowCount;
     int seatsColumnsCount;
 
@@ -14,25 +14,25 @@ public class Cinema_Hall
             throw new Error("Зал не может быть создан с такими параметрами");
         }
 
-        this.seatsColumnsCount = seatsColumnsCount;
         this.seatsRowCount = seatsRowsCount;
+        this.seatsColumnsCount = seatsColumnsCount;
     }
 
     public void addMovie(Movie_Session newMovie)
     {
         for (Movie_Session movie : this.movieSessions)
         {
-            if (movie.movieStart.after(newMovie.movieStart))
+            if (movie.movieDate.after(newMovie.movieDate))
             {
-                if (movie.movieStart.getTime() < newMovie.movieStart.getTime() + (long) newMovie.movieLength * 60000L)
+                if (movie.movieDate.getTime() < newMovie.movieDate.getTime() + (long) newMovie.movieDuration * 60000L)
                 {
                     throw new Error("В это время в зале проводится другой сеанс");
                 }
             }
 
-            else if (movie.movieStart.before(newMovie.movieStart))
+            else if (movie.movieDate.before(newMovie.movieDate))
             {
-                if (movie.movieStart.getTime() + (long) movie.movieLength * 60000L > newMovie.movieStart.getTime())
+                if (movie.movieDate.getTime() + (long) movie.movieDuration * 60000L > newMovie.movieDate.getTime())
                 {
                     throw new Error("В это время в зале проводится другой сеанс");
                 }
@@ -44,29 +44,29 @@ public class Cinema_Hall
             }
         }
 
-        newMovie.setSeatsConfig(seatsRowCount, seatsColumnsCount);
+        newMovie.SeatsConfig(seatsRowCount, seatsColumnsCount);
         movieSessions.add(newMovie);
-        movieSessions.sort((a, b) -> a.movieStart.compareTo(b.movieStart));
+        movieSessions.sort((a, b) -> a.movieDate.compareTo(b.movieDate));
     }
 
-    public Movie_Session getMovie(String movieTitle)
+    public Movie_Session getMovie(String movieName)
     {
         for (Movie_Session movie : movieSessions)
         {
-            if (movie.movieTitle.equals(movieTitle))
+            if (movie.movieName.equals(movieName))
             {
                 return movie;
             }
         }
 
-        throw new Error("В этом зале нет такого кино");
+        throw new Error("В этом зале такого кино нет");
     }
 
     public Movie_Session getNextMovie()
     {
         for (Movie_Session movieSession : movieSessions)
         {
-            if (movieSession.hasFreeSeats())
+            if (movieSession.FreeSeats())
             {
                 return movieSession;
             }
@@ -75,14 +75,14 @@ public class Cinema_Hall
         return null;
     }
 
-    public void showMovies(SimpleDateFormat formatter)
+    public void Movies(SimpleDateFormat formatter)
     {
         System.out.println("Доступные фильмы:");
         for (Movie_Session movie : movieSessions)
         {
-            if (movie.hasFreeSeats())
+            if (movie.FreeSeats())
             {
-                System.out.printf("Название '%s', длительность %d минут, начало %s \n", movie.movieTitle, movie.movieLength, formatter.format(movie.movieStart.getTime()));
+                System.out.printf("Название '%s', длительность %d минут, начало %s \n", movie.movieName, movie.movieDuration, formatter.format(movie.movieDate.getTime()));
             }
         }
     }

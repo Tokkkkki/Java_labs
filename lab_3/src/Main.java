@@ -12,13 +12,13 @@ public class Main {
     static SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.ENGLISH);
     public static void main (String[] args)
     {
-        System.out.println("Введите: чтобы войти как администратор - 1; чтобы войти как пользователь - 2");
+        System.out.println("Введите: 1 - войти как администратор; 2 - войти как пользователь");
         int userType = scanner.nextInt();
         scanner.nextLine();
 
         try
         {
-            initDefaultCinemas();
+            DefaultCinemas();
         }
         catch (ParseException e)
         {
@@ -31,12 +31,12 @@ public class Main {
             case 2 -> user = new Client();
         }
 
-        showUserActions();
+        UserActions();
     }
 
-    public static void showUserActions()
+    public static void UserActions()
     {
-        user.showActions();
+        user.Actions();
         int action = scanner.nextInt();
         scanner.nextLine();
 
@@ -46,25 +46,25 @@ public class Main {
             {
                 case 0 ->
                 {
-                    user.showTickets();
-                    showUserActions();
+                    user.Tickets();
+                    UserActions();
                 }
-                case 1 -> showNextMovie();
+                case 1 -> NextMovie();
                 case 2 -> buyTicket();
                 case 3 -> addCinema();
                 case 4 -> addCinemaHall();
                 case 5 -> addMovie();
-                default -> showUserActions();
+                default -> UserActions();
             }
         }
         catch (Error e)
         {
             System.out.println(e.getMessage());
-            showUserActions();
+            UserActions();
         }
     }
 
-    public static void showNextMovie()
+    public static void NextMovie()
     {
         Movie_Session currentMovie = new Movie_Session(new Date(0), 0, "");
         int cinemaId = -1;
@@ -80,7 +80,7 @@ public class Main {
 
                 if (movie != null)
                 {
-                    if (movie.movieStart.before(currentMovie.movieStart) || currentMovie.movieStart.getTime() == 0)
+                    if (movie.movieDate.before(currentMovie.movieDate) || currentMovie.movieDate.getTime() == 0)
                     {
                         currentMovie = movie;
                         cinemaId = i;
@@ -93,22 +93,22 @@ public class Main {
         if (cinemaId == -1)
         {
             System.out.println("Ближайшего сеанса не найдено");
-            showUserActions();
+            UserActions();
             return;
         }
 
         System.out.println("Ближайший сеанс со свободными местами:");
-        System.out.println(currentMovie.movieTitle);
-        System.out.printf("Время начала %s, длительность %d минут\n", formatter.format(currentMovie.movieStart.getTime()), currentMovie.movieLength);
+        System.out.println(currentMovie.movieName);
+        System.out.printf("Время начала %s, длительность %d минут\n", formatter.format(currentMovie.movieDate.getTime()), currentMovie.movieDuration);
         System.out.printf("Кинотеатр %d, зал %d \n", cinemaId, hallId);
-        showUserActions();
+        UserActions();
     }
 
     public static void buyTicket()
     {
         Cinema cinema = getCinema();
 
-        cinema.showHalls();
+        cinema.Halls();
         System.out.println("Введите номер кинозала");
         int hallId = scanner.nextInt();
         scanner.nextLine();
@@ -121,17 +121,17 @@ public class Main {
         catch (Error e)
         {
             System.out.println(e.getMessage());
-            showUserActions();
+            UserActions();
             return;
         }
 
-        hall.showMovies(formatter);
+        hall.Movies(formatter);
 
         System.out.println("Введите название фильма:");
-        String movieTitle = scanner.nextLine();
+        String movieName = scanner.nextLine();
 
-        Movie_Session movie = hall.getMovie(movieTitle);
-        movie.showSeats();
+        Movie_Session movie = hall.getMovie(movieName);
+        movie.Seats();
 
         System.out.println("Введите номер строки и столбца кресла:");
         int row = scanner.nextInt();
@@ -141,33 +141,33 @@ public class Main {
 
         try
         {
-            movie.bookSeat(row, column);
-            user.buyTicket(cinemas.indexOf(cinema), hallId, movieTitle, row, column);
-            user.showTickets();
-            showUserActions();
+            movie.BookSeat(row, column);
+            user.buyTicket(cinemas.indexOf(cinema), hallId, movieName, row, column);
+            user.Tickets();
+            UserActions();
         }
         catch (Error e)
         {
             System.out.println(e.getMessage());
-            showUserActions();
+            UserActions();
             return;
         }
     }
 
     public static void addCinema()
     {
-        if (!user.getModifyPermission()) throw new Error("Вам не хватает прав для этого действия");
+        if (!user.getPermission()) throw new Error("Вам не хватает прав для этого действия");
 
         Cinema newCinema = new Cinema();
         cinemas.add(newCinema);
 
         System.out.printf("Номер нового кинотеатра - %d \n\n", cinemas.size() - 1);
-        showUserActions();
+        UserActions();
     }
 
     public static void addCinemaHall()
     {
-        if (!user.getModifyPermission()) throw new Error("Вам не хватает прав для этого действия");
+        if (!user.getPermission()) throw new Error("Вам не хватает прав для этого действия");
 
         System.out.println("Введите количество рядов:");
         int row = scanner.nextInt();
@@ -186,18 +186,18 @@ public class Main {
         catch (Error e)
         {
             System.out.println(e.getMessage());
-            showUserActions();
+            UserActions();
             return;
         }
 
         cinema.addCinemaHall(newCinemaHall);
         System.out.printf("Номер нового зала - %d \n\n", cinema.getHallsCount() - 1);
-        showUserActions();
+        UserActions();
     }
 
     public static void addMovie()
     {
-        if (!user.getModifyPermission()) throw new Error("Вам не хватает прав для этого действия");
+        if (!user.getPermission()) throw new Error("Вам не хватает прав для этого действия");
 
         Cinema cinema;
         try
@@ -207,11 +207,11 @@ public class Main {
         catch (Error e)
         {
             System.out.println(e.getMessage());
-            showUserActions();
+            UserActions();
             return;
         }
 
-        cinema.showHalls();
+        cinema.Halls();
         System.out.println("Введите номер кинозала");
         int hallId = scanner.nextInt();
         scanner.nextLine();
@@ -219,7 +219,7 @@ public class Main {
         System.out.println("Введите название фильма");
         String title = scanner.nextLine();
 
-        System.out.println("Введите дату (пример: 2023-10-31 14:30)");
+        System.out.println("Введите дату показа (пример: 2023-10-31 14:30)");
         String stringDate = scanner.nextLine();
 
         System.out.println("Введите продолжительность фильма в минутах");
@@ -234,7 +234,7 @@ public class Main {
         catch (ParseException e)
         {
             System.out.println("Произошла ошибка при записи даты");
-            showUserActions();
+            UserActions();
             return;
         }
 
@@ -247,19 +247,19 @@ public class Main {
         catch (Error e)
         {
             System.out.println(e.getMessage());
-            showUserActions();
+            UserActions();
             return;
         }
 
-        showUserActions();
+        UserActions();
     }
 
-    public static void showCinemas()
+    public static void Cinemas()
     {
         if (cinemas.isEmpty())
         {
             System.out.println("На данный момент нет доступных кинотеатров");
-            showUserActions();
+            UserActions();
             return;
         }
 
@@ -273,7 +273,7 @@ public class Main {
 
     public static Cinema getCinema()
     {
-        showCinemas();
+        Cinemas();
         System.out.println("Введите номер кинотеатра");
         int cinemaId = scanner.nextInt();
         scanner.nextLine();
@@ -291,7 +291,7 @@ public class Main {
         return cinema;
     }
 
-    public static void initDefaultCinemas() throws ParseException
+    public static void DefaultCinemas() throws ParseException
     {
         for (int i = 0; i <= 1; i++)
         {

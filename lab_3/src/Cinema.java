@@ -1,7 +1,8 @@
 import java.util.ArrayList;
 
-public class Cinema {
-    private final ArrayList<Cinema_Hall> cinemaHalls = new ArrayList<Cinema_Hall>();
+public class Cinema
+{
+    private ArrayList<Cinema_Hall> cinemaHalls = new ArrayList<Cinema_Hall>();
 
     public void addCinemaHall(Cinema_Hall hall)
     {
@@ -12,10 +13,11 @@ public class Cinema {
         return cinemaHalls.size();
     }
 
-    public void showHalls()
+    public void Halls()
     {
         System.out.println("Доступные кинозалы:");
-        for (int i = 0; i < this.getHallsCount(); i++) {
+        for (int i = 0; i < this.getHallsCount(); i++)
+        {
             System.out.printf("%d ", i);
         }
         System.out.println();
