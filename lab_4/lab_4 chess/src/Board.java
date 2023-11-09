@@ -10,20 +10,20 @@ import java.util.ArrayList;
 
 public class Board {
     private Piece[][] fields = new Piece[8][8];
-    private ArrayList<String> takeWhite = new ArrayList(16);
-    private ArrayList<String> takeBlack = new ArrayList(16);
+    private ArrayList<String> White = new ArrayList(16);
+    private ArrayList<String> Black = new ArrayList(16);
 
-    public char getUserColor()
+    public char getColorGaming()
     {
-        return colorUser;
+        return colorGaming;
     }
 
-    public void setUserColor(char colorUser)
+    public void setColorGaming(char colorGaming)
     {
-        this.colorUser = colorUser;
+        this.colorGaming = colorGaming;
     }
 
-    private char colorUser;
+    private char colorGaming;
 
     public void init()
     {
@@ -72,14 +72,14 @@ public class Board {
         return " " + piece.getColor() + piece.getName() + " ";
     }
 
-    public ArrayList<String> getTakeWhite()
+    public ArrayList<String> getWhite()
     {
-        return takeWhite;
+        return White;
     }
 
-    public ArrayList<String> getTakeBlack()
+    public ArrayList<String> getBlack()
     {
-        return takeBlack;
+        return Black;
     }
 
     public void move_piece(int row1, int col1, int row2, int col2 ) throws Error
@@ -96,7 +96,7 @@ public class Board {
             throw new Error("На выбранном поле фигура отсутствует");
         }
 
-        if (piece.getColor() != getUserColor())
+        if (piece.getColor() != getColorGaming())
         {
             throw new Error("На этом поле находится фигура другого цвета");
         }
@@ -112,7 +112,7 @@ public class Board {
 
             catch (IndexOutOfBoundsException e)
             {
-                throw new Error("Вы выбрали клетку за пределами игрового поля");
+                throw new Error("Выбрана клетка за пределами игрового поля");
             }
 
             if (nextWold != null && piece.canAttack(row1, col1, row2, col2, nextWold))
@@ -137,13 +137,11 @@ public class Board {
             throw new Error("Эта фигура не может встать на данную клетку");
         }
 
-        // Если для фигуры нет препятствий на пути и траектория соответствует ходу фигуры
         if (piece.canMove(row1, col1, row2, col2, this.fields))
         {
             Piece nextField = this.fields[row2][col2];
 
-            // Проверка на шах для короля
-            if (piece.getClass().getSimpleName().equals("King") && this.is_check(row2, col2, this.getUserColor()))
+            if (piece.getClass().getSimpleName().equals("King") && this.is_check(row2, col2, this.getColorGaming()))
             {
                 throw new Error("Король не может подставляться под удар");
             }
@@ -154,8 +152,7 @@ public class Board {
                 {
                     this.attack_piece(row1, col1, row2, col2, piece);
 
-                    // Проверка на шах
-                    char oppositeKingColor = this.getUserColor() == 'w' ? 'b' : 'w';
+                    char oppositeKingColor = this.getColorGaming() == 'w' ? 'b' : 'w';
                     System.out.println(oppositeKingColor);
                     int[] oppositeKingPos = this.find_king_position(oppositeKingColor);
 
@@ -172,15 +169,14 @@ public class Board {
                     return;
                 }
 
-                throw new Error("Поле уже занято фигурой вашего цвета");
+                throw new Error("Поле уже занято вашей фигурой");
             }
 
             System.out.println("move");
             this.fields[row2][col2] = piece;
             this.fields[row1][col1] = null;
 
-            // Проверка на шах
-            char oppositeKingColor = this.getUserColor() == 'w' ? 'b' : 'w';
+            char oppositeKingColor = this.getColorGaming() == 'w' ? 'b' : 'w';
             System.out.println(oppositeKingColor);
             int[] oppositeKingPos = this.find_king_position(oppositeKingColor);
 
@@ -229,15 +225,14 @@ public class Board {
 
         switch (this.fields[row2][col2].getColor())
         {
-            case 'w' -> this.takeWhite.add(this.fields[row2][col2].getColor() + this.fields[row2][col2].getName());
-            case 'b' -> this.takeBlack.add(this.fields[row2][col2].getColor() + this.fields[row2][col2].getName());
+            case 'w' -> this.White.add(this.fields[row2][col2].getColor() + this.fields[row2][col2].getName());
+            case 'b' -> this.Black.add(this.fields[row2][col2].getColor() + this.fields[row2][col2].getName());
         }
 
         this.fields[row2][col2] = piece;
         this.fields[row1][col1] = null;
     }
 
-    // Проверка шаха
     public boolean is_check(int kingRow, int kingCol, char kingColor)
     {
         for (int i = 0; i < 8; i++)
@@ -266,16 +261,14 @@ public class Board {
         return false;
     }
 
-    // Проверка мата
     public boolean is_mate(int row, int col, int kingRow, int kingCol, char kingColor)
     {
-        // 1. Проверка вшзможности побега короля
         for (int i = -1; i < 2; i++)
         {
             for (int j = -1; j < 2; j++)
             {
                 if (kingRow + i >= 8 || kingRow + i < 0 || kingCol + j >= 8 || kingCol + j < 0) continue;
-                if (i == 0 && j == 0) continue; // Уже проверяли ранее данную клетку
+                if (i == 0 && j == 0) continue;
 
                 if (this.fields[kingRow + i][kingCol + j] == null && !(this.is_check(kingRow + i, kingCol + j, kingColor)))
                 {
@@ -284,7 +277,6 @@ public class Board {
             }
         }
 
-        // 2. Проверка возможности защиты короля
         for (int i = 0; i < 8; i++)
         {
             for (int j = 0; j < 8; j++)
@@ -295,8 +287,7 @@ public class Board {
                 {
                     continue;
                 }
-
-                // Если при самостоятельном съедании вражеской фигуры Король все равно попадает под шах
+                
                 if (piece.getClass().getSimpleName().equals("King") && this.is_check(row, col, kingColor))
                 {
                     continue;

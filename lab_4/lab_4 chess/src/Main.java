@@ -6,14 +6,14 @@ public class Main
     static Scanner scan = new Scanner(System.in);
     public static void main(String[] args)
     {
-        board.setUserColor('w');
+        board.setColorGaming('w');
         board.init();
         start_game();
     }
 
     public static void start_game()
     {
-        if (board.getTakeBlack().size() == 15 && board.getTakeWhite().size() == 15)
+        if (board.getBlack().size() == 15 && board.getWhite().size() == 15)
         {
             System.out.println("Ничья!");
             System.out.println();
@@ -26,10 +26,10 @@ public class Main
         System.out.println("----- exit: Выход из игры");
         System.out.println("------y1 x1 y2 x2: Ход фигуры из клетки x1, y1 в клекту x2, y2");
 
-        System.out.println("Взятые Белые:" + board.getTakeWhite().toString());
-        System.out.println("Взятые Черные:" + board.getTakeBlack().toString());
+        System.out.println("Взятые Белые:" + board.getWhite().toString());
+        System.out.println("Взятые Черные:" + board.getBlack().toString());
 
-        switch (board.getUserColor())
+        switch (board.getColorGaming())
         {
             case 'w' -> System.out.println("Ход Белых:");
             case 'b' -> System.out.println("Ход Черных:");
@@ -52,10 +52,10 @@ public class Main
         try
         {
             board.move_piece(y1, x1, y2, x2);
-            switch (board.getUserColor())
+            switch (board.getColorGaming())
             {
-                case 'w' -> board.setUserColor('b');
-                case 'b' -> board.setUserColor('w');
+                case 'w' -> board.setColorGaming('b');
+                case 'b' -> board.setColorGaming('w');
             }
         }
 
